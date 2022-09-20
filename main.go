@@ -143,7 +143,6 @@ func main() {
 	var opts options
 	_, err := flags.ParseArgs(&opts, os.Args)
 	if err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 
