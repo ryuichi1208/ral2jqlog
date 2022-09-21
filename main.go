@@ -30,6 +30,7 @@ type AuditLog struct {
 type QueryLog struct {
 	TimeStamp string `json:"timeStamp"`
 	User      string `json:"user"`
+	Client    string `json:"client"`
 	Host      string `json:"host"`
 	Command   string `json:"command"`
 	Query     string `json:"query"`
@@ -43,11 +44,16 @@ type options struct {
 func message2CSV(csvString string, w io.Writer) error {
 	arr := strings.Split(csvString, ",")
 
+	if len(arr) < 9 {
+		return fmt.Errorf("CSV is broken")
+	}
+
 	var queryLog = QueryLog{}
 	queryLog.TimeStamp = arr[0]
+	queryLog.Host = arr[1]
 	queryLog.User = arr[2]
-	queryLog.Host = arr[3]
-	queryLog.Command = arr[3]
+	queryLog.Client = arr[3]
+	queryLog.Command = arr[6]
 	s := strings.Join(arr[8:len(arr)-1], ",")[1:]
 	queryLog.Query = s[:len(s)-1]
 
