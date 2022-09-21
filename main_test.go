@@ -21,15 +21,22 @@ func Test_message2CSV(t *testing.T) {
 				csvString: "20220920 05:38:07,test,common,10.1.1.1,54988141,330935144,QUERY,,'\"set names \\'ujis\\'\",0",
 			},
 			wantErr: false,
-			want:    "{\"timeStamp\":\"20220920 05:38:07\",\"user\":\"common\",\"host\":\"10.1.1.1\",\"command\":\"10.1.1.1\",\"query\":\"\\\"set names \\\\'ujis\\\\'\"}\n",
+			want:    "{\"timeStamp\":\"20220920 05:38:07\",\"user\":\"common\",\"client\":\"10.1.1.1\",\"host\":\"test\",\"command\":\"QUERY\",\"query\":\"\\\"set names \\\\'ujis\\\\'\"}\n",
 		},
 		{
-			name: "CSV Test2 Error",
+			name: "CSV Test2",
 			args: args{
 				csvString: "20220920 05:38:07,test-server,common,100.1.1.1,54988141,330935146,QUERY,,'select * from `test` where `id` is null limit 1',0",
 			},
 			wantErr: false,
-			want:    "{\"timeStamp\":\"20220920 05:38:07\",\"user\":\"common\",\"host\":\"100.1.1.1\",\"command\":\"100.1.1.1\",\"query\":\"select * from `test` where `id` is null limit 1\"}\n",
+			want:    "{\"timeStamp\":\"20220920 05:38:07\",\"user\":\"common\",\"client\":\"100.1.1.1\",\"host\":\"test-server\",\"command\":\"QUERY\",\"query\":\"select * from `test` where `id` is null limit 1\"}\n",
+		},
+		{
+			name: "CSV Test3",
+			args: args{
+				csvString: "20220920 05:38:07,test-server,common,100.1.1.1,54988141,330935146,QUERY,",
+			},
+			wantErr: true,
 		},
 	}
 	var buffer *bytes.Buffer
@@ -122,7 +129,7 @@ func TestDetectFileContentType(t *testing.T) {
 		{
 			name: "Test003 nomal",
 			args: args{
-				filename: "./testdata/test002.gz",
+				filename: "./testdata/test003.gz",
 			},
 			want:    "application/x-gzip",
 			wantErr: false,
